@@ -1,0 +1,6 @@
+name: SwishPlugin
+version: '${project.version}'
+main: io.github.rasmuswinzell.swishplugin.SwishPlugin
+api-version: 1.18
+authors: [ Rasmus, Anton ]
+description: This is a plugin for Swish integration

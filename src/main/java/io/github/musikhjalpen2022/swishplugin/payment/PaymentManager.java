@@ -1,4 +1,4 @@
-package io.github.rasmuswinzell.swishplugin.payment;
+package io.github.musikhjalpen2022.swishplugin.payment;
 
 public class PaymentManager {
 

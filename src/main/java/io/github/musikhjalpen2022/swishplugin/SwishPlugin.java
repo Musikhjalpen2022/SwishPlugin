@@ -1,4 +1,4 @@
-package io.github.rasmuswinzell.swishplugin;
+package io.github.musikhjalpen2022.swishplugin;
 
 import org.bukkit.plugin.java.JavaPlugin;
 

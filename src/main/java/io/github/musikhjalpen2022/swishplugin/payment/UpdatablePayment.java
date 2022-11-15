@@ -1,7 +1,13 @@
 package io.github.musikhjalpen2022.swishplugin.payment;
 
-public interface UpdatablePayment {
+import org.bukkit.entity.Player;
 
-    void update();
+public abstract class UpdatablePayment extends Payment {
+
+    public UpdatablePayment(int amount, Player player) {
+        super(amount, player);
+    }
+
+    protected abstract void update();
 
 }

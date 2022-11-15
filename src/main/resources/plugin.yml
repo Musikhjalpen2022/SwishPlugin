@@ -4,3 +4,6 @@ main: io.github.musikhjalpen2022.swishplugin.SwishPlugin
 api-version: 1.18
 authors: [ Rasmus, Anton ]
 description: This is a plugin for Swish integration
+commands:
+  swish:
+    description: Make a swish request for the given phone number

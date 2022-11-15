@@ -36,7 +36,9 @@ public class BossanAPI {
                     .header("Referrer-Policy", "strict-origin-when-cross-origin")
                     .POST(HttpRequest.BodyPublishers.ofString("------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"entryTitle\"\r\n\r\nVisual VR - Varendaste barn har Rätt att leka \r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"entryId\"\r\n\r\n5PFbxRub1zL07bCLa6onpH\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"amount\"\r\n\r\n" + paymentData.amount + "\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"currency\"\r\n\r\nSEK\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"payerAlias\"\r\n\r\n" + paymentData.phoneNumber + "\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"donorType\"\r\n\r\nPRIVATE\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"entryType\"\r\n\r\nfundraiser\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"isPublic\"\r\n\r\ntrue\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"name\"\r\n\r\n" + paymentData.username + "\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"message\"\r\n\r\nVia Virtuel Reality\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"isParticipant\"\r\n\r\nfalse\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"participantName\"\r\n\r\n\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"participantEmail\"\r\n\r\n\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"participantPhone\"\r\n\r\n\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"invoiceName\"\r\n\r\n\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"invoiceCompany\"\r\n\r\n\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"invoiceEmail\"\r\n\r\n\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"isHiddenAmount\"\r\n\r\nfalse\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso--\r\n"))
                     .build();
+            System.out.println("phone number: " + paymentData.phoneNumber + ", amount: " + paymentData.amount + ", username: " + paymentData.username);
             client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenAccept(response -> {
+                System.out.println("status code: " + response.statusCode());
                 String referenceNumber = null;
                 try {
                     if (response.statusCode() != 503) {
@@ -64,18 +66,17 @@ public class BossanAPI {
                     .GET()
                     .build();
             client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenAccept(response -> {
-                PaymentStatus status = null;
+                PaymentStatus status = PaymentStatus.ERROR;
                 try {
-                    if (response.statusCode() != 503) {
-                        JsonObject jsonObject = JsonParser.parseReader(new JsonReader(new StringReader(response.body()))).getAsJsonObject();
-                        String statusId = jsonObject.get("status").getAsString();
-                        if (Objects.equals(statusId, "PAID")) {
-                            status = PaymentStatus.PAID;
-                        } else if (Objects.equals(statusId, "DECLINED")) {
-                            status = PaymentStatus.DECLINED;
-                        } else {
-                            status = PaymentStatus.WAITING;
-                        }
+                    System.out.println("response: " + response.body());
+                    JsonObject jsonObject = JsonParser.parseReader(new JsonReader(new StringReader(response.body()))).getAsJsonObject();
+                    String statusId = jsonObject.get("status").getAsString();
+                    if (Objects.equals(statusId, "PAID")) {
+                        status = PaymentStatus.PAID;
+                    } else if (Objects.equals(statusId, "DECLINED")) {
+                        status = PaymentStatus.DECLINED;
+                    } else if (Objects.equals(statusId, "NOT PAID")) {
+                        status = PaymentStatus.WAITING;
                     }
                 } catch (Exception ignored) {}
                 f.accept(status);

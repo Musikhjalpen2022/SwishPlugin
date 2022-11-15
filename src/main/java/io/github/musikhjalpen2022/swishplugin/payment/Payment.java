@@ -4,16 +4,19 @@ import org.bukkit.entity.Player;
 
 public abstract class Payment {
 
-    private PaymentManager paymentManager = null;
-    private double amount;
-    private Player player;
+    protected PaymentManager paymentManager = null;
+    protected double amount;
+    protected Player player;
+    protected PaymentResult result = null;
 
     public Payment(double amount, Player player) {
         this.amount = amount;
         this.player = player;
     }
 
-    private void onPaymentResult(PaymentResult paymentResult) {
+    public abstract void sendRequest();
+
+    protected void onPaymentResult(PaymentResult paymentResult) {
         paymentManager.onPaymentResult(this, paymentResult);
     }
 

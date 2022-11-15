@@ -4,14 +4,14 @@ import org.bukkit.entity.Player;
 
 public abstract class Payment {
 
-    private PaymentManager paymentManager;
+    private PaymentManager paymentManager = null;
+    private double amount;
     private Player player;
 
-    public Payment(PaymentManager paymentManager, Player player) {
-        this.paymentManager = paymentManager;
+    public Payment(double amount, Player player) {
+        this.amount = amount;
         this.player = player;
     }
-
 
     private void onPaymentResult(PaymentResult paymentResult) {
         paymentManager.onPaymentResult(this, paymentResult);

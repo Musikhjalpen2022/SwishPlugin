@@ -26,7 +26,8 @@ public class BossanPaymentCommand implements CommandExecutor {
             String phoneNumberArg = args[0];
             String amountArg = args[1];
 
-            String phoneNumber = phoneNumberArg; // Parse number
+            String phoneNumber = phoneNumberArg.replaceAll("[^0-9]+", ""); // Parse number
+            if (phoneNumber.startsWith("0")) { phoneNumber = phoneNumber.replaceFirst("0", "46"); }
             int amount = Integer.parseInt(amountArg);
 
             BossanPayment payment = new BossanPayment(amount, player, phoneNumber);

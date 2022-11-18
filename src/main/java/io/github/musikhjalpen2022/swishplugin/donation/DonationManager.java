@@ -68,14 +68,17 @@ public class DonationManager {
 
     private void notifyTotalDonationsChange() {
         donationListeners.forEach(donationListener -> donationListener.onTotalDonationsChange(getTotalDonations()));
+        swishPlugin.getScoreboard().setTotalAmount(getTotalDonations());
     }
 
     private void notifyTopsDonorsChange() {
         donationListeners.forEach(donationListener -> donationListener.onTopDonorsChange(getTopDonors()));
+        swishPlugin.getScoreboard().setTopList(getTopDonors());
     }
 
     private void notifyDonorChange(Donor donor) {
         donationListeners.forEach(donationListener -> donationListener.onDonorChange(donor));
+        swishPlugin.getScoreboard().setPlayerDonation(donor);
     }
 
 

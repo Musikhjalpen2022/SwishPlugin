@@ -1,7 +1,10 @@
 package io.github.musikhjalpen2022.swishplugin.payment;
 
+import io.github.musikhjalpen2022.swishplugin.SwishPlugin;
+import io.github.musikhjalpen2022.swishplugin.reward.Fireworks;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -19,7 +22,10 @@ public class PaymentManager implements PaymentListener {
     private ScheduledFuture updateCycle = null;
     private static final long UPDATE_PERIOD = 5;
 
-    public PaymentManager() {
+    private SwishPlugin swishPlugin;
+
+    public PaymentManager(SwishPlugin swishPlugin) {
+        this.swishPlugin = swishPlugin;
         payments = new HashSet<>();
     }
 
@@ -72,6 +78,13 @@ public class PaymentManager implements PaymentListener {
             System.out.printf("%s cancelled %d SEK donation%n", playerName, paymentResult.getAmount());
             player.sendMessage("Donation cancelled. Not nice =(");
         }
+        BukkitRunnable bukkitRunnable = new BukkitRunnable() {
+            @Override
+            public void run() {
+                Fireworks.spawnFireworks(player.getLocation(), paymentResult.getAmount());
+            }
+        };
+        bukkitRunnable.runTask(swishPlugin);
     }
 
 }

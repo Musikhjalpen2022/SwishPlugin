@@ -11,7 +11,7 @@ public final class SwishPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
-        paymentManager = new PaymentManager();
+        paymentManager = new PaymentManager(this);
 
         getCommand("swish").setExecutor(new BossanPaymentCommand(this));
     }

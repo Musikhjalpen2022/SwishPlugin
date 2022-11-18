@@ -17,17 +17,21 @@ public class DonationCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length != 2) {
+        if (args.length == 0) {
             // Not enough arguments (player, amount)
             return false;
         }
         String playerArg = args[0];
-        String amountArg = args[1];
-
         Player player = Bukkit.getPlayer(playerArg);
-        int amount = Integer.parseInt(amountArg);
 
-        swishPlugin.getDonationManager().registerDonation(player.getUniqueId(), amount);
+        if (args.length == 2) {
+            String amountArg = args[1];
+            int amount = Integer.parseInt(amountArg);
+            swishPlugin.getDonationManager().registerDonation(player.getUniqueId(), amount);
+        } else {
+            int donatedAmount = swishPlugin.getDonationManager().getDonor(player.getUniqueId()).getTotalDonations();
+            player.sendMessage(String.format("%s has donated %d SEK in total", player.getDisplayName(), donatedAmount));
+        }
         return true;
     }
 }

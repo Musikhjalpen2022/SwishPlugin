@@ -49,7 +49,7 @@ public class DonationManager {
     }
 
     private void addPlayerDonation(UUID playerId, int amount) {
-        Donor donor = donors.getOrDefault(playerId, new Donor(playerId));
+        Donor donor = donors.computeIfAbsent(playerId, Donor::new);
         donor.addDonation(amount);
         totalDonations += amount;
 

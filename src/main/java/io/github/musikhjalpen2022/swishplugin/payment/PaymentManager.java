@@ -72,11 +72,11 @@ public class PaymentManager implements PaymentListener {
         if (paymentResult.isPayed()) {
             // Player has donated.
             System.out.printf("%s donated %d SEK%n", playerName, paymentResult.getAmount());
-            player.sendMessage("Donation received. Thank you!");
+            player.sendMessage("Musikhäjlpen har fått din gåva. Tack!");
         } else {
             // Payment cancelled.
             System.out.printf("%s cancelled %d SEK donation%n", playerName, paymentResult.getAmount());
-            player.sendMessage("Donation cancelled. Not nice =(");
+            player.sendMessage("Swish avbruten.");
         }
         BukkitRunnable bukkitRunnable = new BukkitRunnable() {
             @Override

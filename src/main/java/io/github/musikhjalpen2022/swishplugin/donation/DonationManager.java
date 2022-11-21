@@ -1,7 +1,10 @@
 package io.github.musikhjalpen2022.swishplugin.donation;
 
 import io.github.musikhjalpen2022.swishplugin.SwishPlugin;
+import io.github.musikhjalpen2022.swishplugin.reward.Fireworks;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 
@@ -61,6 +64,10 @@ public class DonationManager {
 
     public void registerDonation(UUID playerId, int amount) {
         addPlayerDonation(playerId, amount);
+
+        Player player = Bukkit.getPlayer(playerId);
+
+        if (amount > 0) Fireworks.spawnFireworks(swishPlugin, player, (int)(Math.sqrt(10f*amount)/2));
     }
 
     private void addPlayerDonation(UUID playerId, int amount) {

@@ -78,13 +78,7 @@ public class PaymentManager implements PaymentListener {
             System.out.printf("%s cancelled %d SEK donation%n", playerName, paymentResult.getAmount());
             player.sendMessage("Swish avbruten.");
         }
-        BukkitRunnable bukkitRunnable = new BukkitRunnable() {
-            @Override
-            public void run() {
-                Fireworks.spawnFireworks(player.getLocation(), paymentResult.getAmount());
-            }
-        };
-        bukkitRunnable.runTask(swishPlugin);
+        swishPlugin.getDonationManager().registerDonation(player.getUniqueId(), paymentResult.getAmount());
     }
 
 }

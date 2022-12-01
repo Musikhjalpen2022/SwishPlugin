@@ -1,6 +1,7 @@
 package io.github.musikhjalpen2022.swishplugin.scoreboard;
 
 import io.github.musikhjalpen2022.swishplugin.SwishPlugin;
+import io.github.musikhjalpen2022.swishplugin.donation.DonationListener;
 import io.github.musikhjalpen2022.swishplugin.donation.Donor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -9,7 +10,7 @@ import org.bukkit.scoreboard.Team;
 
 import java.util.*;
 
-public class Scoreboard {
+public class Scoreboard implements DonationListener {
 
     private List<ScoreHelper> scores;
     private SwishPlugin swish;
@@ -30,6 +31,15 @@ public class Scoreboard {
         scores.add(sh);
     }
 
+    public void removePlayer(Player player) {
+        for (ScoreHelper scoreHelper : scores) {
+            if (scoreHelper.getPlayerUuid().equals(player.getUniqueId())) {
+                scores.remove(scoreHelper);
+                break;
+            }
+        }
+    }
+
     public void setTotalAmount(Integer amount){
         for (ScoreHelper sh: scores)
         {
@@ -42,10 +52,8 @@ public class Scoreboard {
         {
             for (int i = 0; i < 3; i++) {
                 if (i < donors.size()) {
-                    Player player = Bukkit.getPlayer(donors.get(i).getPlayerId());
-                    String username = player.getDisplayName();
                     int amount = donors.get(i).getTotalDonations();
-                    sh.setSlot(5-i, String.format("%d %s &a%d kr", i+1, username, amount));
+                    sh.setSlot(5-i, String.format("%d %s &a%d kr", i+1, donors.get(i).getUsername(), amount));
                 } else {
                     sh.setSlot(5-i, "");
                 }
@@ -63,4 +71,18 @@ public class Scoreboard {
         }
     }
 
+    @Override
+    public void onTotalDonationsChange(int totalDonations) {
+        setTotalAmount(totalDonations);
+    }
+
+    @Override
+    public void onTopDonorsChange(List<Donor> topDonors) {
+        setTopList(topDonors);
+    }
+
+    @Override
+    public void onDonorChange(Donor donor) {
+        setPlayerDonation(donor);
+    }
 }

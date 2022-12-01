@@ -7,6 +7,7 @@ import io.github.musikhjalpen2022.swishplugin.scoreboard.Scoreboard;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.event.Listener;
 
@@ -23,6 +24,7 @@ public final class SwishPlugin extends JavaPlugin implements Listener{
         donationManager = new DonationManager(this);
         paymentManager = new PaymentManager(this);
         scoreboard = new Scoreboard(this);
+        donationManager.addDonationListener(scoreboard);
         this.getServer().getPluginManager().registerEvents(this, this);
         getCommand("swish").setExecutor(new BossanPaymentCommand(this));
         getCommand("donate").setExecutor(new DonationCommand(this));
@@ -35,11 +37,15 @@ public final class SwishPlugin extends JavaPlugin implements Listener{
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event)  {
-
         scoreboard.newPlayer(event.getPlayer());
         scoreboard.setTotalAmount(donationManager.getTotalDonations());
         scoreboard.setTopList(donationManager.getTopDonors());
         scoreboard.setPlayerDonation(donationManager.getDonor(event.getPlayer().getUniqueId()));
+    }
+
+    @EventHandler
+    public  void onPlayerQuit(PlayerQuitEvent event) {
+        scoreboard.removePlayer(event.getPlayer());
     }
 
     public DonationManager getDonationManager() { return donationManager; }

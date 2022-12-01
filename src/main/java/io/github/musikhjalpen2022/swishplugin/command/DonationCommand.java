@@ -31,7 +31,7 @@ public class DonationCommand implements CommandExecutor {
                 swishPlugin.getDonationManager().registerDonation(player.getUniqueId(), amount);
             } else {
                 int donatedAmount = swishPlugin.getDonationManager().getDonor(player.getUniqueId()).getTotalDonations();
-                player.sendMessage(String.format("%s has donated %d SEK in total", player.getDisplayName(), donatedAmount));
+                sender.sendMessage(String.format("%s has donated %d SEK in total", player.getDisplayName(), donatedAmount));
             }
         }
 

@@ -72,7 +72,7 @@ public class PaymentManager implements PaymentListener {
         if (paymentResult.isPayed()) {
             // Player has donated.
             System.out.printf("%s donated %d SEK%n", playerName, paymentResult.getAmount());
-            player.sendMessage("Musikhäjlpen har fått din gåva. Tack!");
+            player.sendMessage("Musikhjälpen har fått din gåva. Tack!");
         } else {
             // Payment cancelled.
             System.out.printf("%s cancelled %d SEK donation%n", playerName, paymentResult.getAmount());

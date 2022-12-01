@@ -7,5 +7,6 @@ description: This is a plugin for Swish integration
 commands:
   swish:
     description: Make a swish request for the given phone number
+    usage: /swish 1234567890 123
   donate:
     description: Make a fake donation with player username and amount

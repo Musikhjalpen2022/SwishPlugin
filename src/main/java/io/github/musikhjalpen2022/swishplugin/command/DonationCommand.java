@@ -24,14 +24,17 @@ public class DonationCommand implements CommandExecutor {
         String playerArg = args[0];
         Player player = Bukkit.getPlayer(playerArg);
 
-        if (args.length == 2) {
-            String amountArg = args[1];
-            int amount = Integer.parseInt(amountArg);
-            swishPlugin.getDonationManager().registerDonation(player.getUniqueId(), amount);
-        } else {
-            int donatedAmount = swishPlugin.getDonationManager().getDonor(player.getUniqueId()).getTotalDonations();
-            player.sendMessage(String.format("%s has donated %d SEK in total", player.getDisplayName(), donatedAmount));
+        if ((sender instanceof Player playersender && playersender.isOp()) || !(sender instanceof Player)) {
+            if (args.length == 2) {
+                String amountArg = args[1];
+                int amount = Integer.parseInt(amountArg);
+                swishPlugin.getDonationManager().registerDonation(player.getUniqueId(), amount);
+            } else {
+                int donatedAmount = swishPlugin.getDonationManager().getDonor(player.getUniqueId()).getTotalDonations();
+                player.sendMessage(String.format("%s has donated %d SEK in total", player.getDisplayName(), donatedAmount));
+            }
         }
+
         return true;
     }
 }

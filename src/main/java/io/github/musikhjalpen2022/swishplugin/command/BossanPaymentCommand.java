@@ -19,16 +19,19 @@ public class BossanPaymentCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player player) {
-            if (args.length != 2) {
+            if (args.length == 0){
+                return false;
+            }
+            else if (args.length != 2) {
                 player.sendMessage(String.format("Något gick fel, hade du mellanrum mellan telefonnumret och summan?"));
-                return true;
+                return false;
             }
             String phoneNumberArg = args[0];
             String amountArg = args[1];
 
             if (phoneNumberArg.length() != 10){
                 player.sendMessage(String.format("Ditt telefonnummer bestod inte av 10 siffror, försök igen."));
-                return true;
+                return false;
             }
 
             String phoneNumber = phoneNumberArg.replaceAll("[^0-9]+", ""); // Parse number

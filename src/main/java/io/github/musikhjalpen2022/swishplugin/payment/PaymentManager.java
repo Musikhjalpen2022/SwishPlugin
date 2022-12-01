@@ -71,6 +71,7 @@ public class PaymentManager implements PaymentListener {
         String playerName = player != null ? player.getName() : "UNKNOWN";
         if (paymentResult.isPayed()) {
             // Player has donated.
+            swishPlugin.getDonationManager().registerDonation(player.getUniqueId(), paymentResult.getAmount());
             System.out.printf("%s donated %d SEK%n", playerName, paymentResult.getAmount());
             player.sendMessage("Musikhjälpen har fått din gåva. Tack!");
         } else {
@@ -78,7 +79,6 @@ public class PaymentManager implements PaymentListener {
             System.out.printf("%s cancelled %d SEK donation%n", playerName, paymentResult.getAmount());
             player.sendMessage("Swish avbruten.");
         }
-        swishPlugin.getDonationManager().registerDonation(player.getUniqueId(), paymentResult.getAmount());
     }
 
 }

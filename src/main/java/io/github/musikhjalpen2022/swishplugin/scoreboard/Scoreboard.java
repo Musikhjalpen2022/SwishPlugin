@@ -14,6 +14,9 @@ public class Scoreboard implements DonationListener {
 
     private List<ScoreHelper> scores;
     private SwishPlugin swish;
+
+    private static final String[] topListColors = {"&e", "&7", "&6"};
+
     public Scoreboard(SwishPlugin swosh){
         swish = swosh;
         scores = new ArrayList<ScoreHelper>();
@@ -23,10 +26,11 @@ public class Scoreboard implements DonationListener {
         UUID playeruuid = player.getUniqueId();
         ScoreHelper sh = new ScoreHelper(player);
         sh.setTitle("&aMusikhjälpen");
-        sh.setSlot(10, "");
-        sh.setSlot(9, " Minecraft Bidrag ");
-        sh.setSlot(7, "");
-        sh.setSlot(6, "     Toppgivare");
+        sh.setSlot(11, "");
+        sh.setSlot(10, " Minecraft Bidrag ");
+        sh.setSlot(8, "");
+        sh.setSlot(7, "     Toppgivare");
+        sh.setSlot(2, "");
         sh.setSlot(1, "     Ditt bidrag");
         scores.add(sh);
     }
@@ -43,7 +47,7 @@ public class Scoreboard implements DonationListener {
     public void setTotalAmount(Integer amount){
         for (ScoreHelper sh: scores)
         {
-            sh.setSlot(8, String.format("&a        %d kr", amount));
+            sh.setSlot(9, String.format("&a        %d kr", amount));
         }
     }
 
@@ -53,9 +57,9 @@ public class Scoreboard implements DonationListener {
             for (int i = 0; i < 3; i++) {
                 if (i < donors.size()) {
                     int amount = donors.get(i).getTotalDonations();
-                    sh.setSlot(5-i, String.format("%d %s &a%d kr", i+1, donors.get(i).getUsername(), amount));
+                    sh.setSlot(6-i, String.format("%s%d&f %s &a%d kr",topListColors[i], i+1, donors.get(i).getUsername(), amount));
                 } else {
-                    sh.setSlot(5-i, "");
+                    sh.setSlot(6-i, "");
                 }
             }
 

@@ -19,12 +19,11 @@ public class BossanAPI {
 
     public static HttpClient client = HttpClient.newHttpClient();
 
-    private final static String BASE_URL = "https://bossan.varldensbarn.se/server/";
-
+    private final static String BASE_URL = "https://bossan.musikhjalpen.se/";
 
     public static boolean requestPayment(PaymentData paymentData, Consumer<String> f) {
         try {
-            HttpRequest request = HttpRequest.newBuilder().uri(new URI(BASE_URL + "payments/swish/fundraiser"))
+            HttpRequest request = HttpRequest.newBuilder().uri(new URI(BASE_URL + "server/payments/swish/fundraiser"))
                     .header("accept", "*/*")
                     .header("accept-language", "en-US,en;q=0.9")
                     .header("content-type", "multipart/form-data; boundary=----WebKitFormBoundarymQjQXJFEqEjeTFso")
@@ -32,9 +31,9 @@ public class BossanAPI {
                     .header("sec-fetch-mode", "cors")
                     .header("sec-fetch-site", "same-origin")
                     .header("sec-gpc", "1")
-                    .header("Referer", "https://bossan.varldensbarn.se/visual-vr-varendaste-barn-har-raett-att-leka")
+                    .header("Referer", BASE_URL + "musikhjalpen")
                     .header("Referrer-Policy", "strict-origin-when-cross-origin")
-                    .POST(HttpRequest.BodyPublishers.ofString("------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"entryTitle\"\r\n\r\nVisual VR - Varendaste barn har Rätt att leka \r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"entryId\"\r\n\r\n5PFbxRub1zL07bCLa6onpH\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"amount\"\r\n\r\n" + paymentData.amount + "\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"currency\"\r\n\r\nSEK\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"payerAlias\"\r\n\r\n" + paymentData.phoneNumber + "\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"donorType\"\r\n\r\nPRIVATE\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"entryType\"\r\n\r\nfundraiser\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"isPublic\"\r\n\r\ntrue\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"name\"\r\n\r\n" + paymentData.username + "\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"message\"\r\n\r\nVia Virtuel Reality\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"isParticipant\"\r\n\r\nfalse\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"participantName\"\r\n\r\n\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"participantEmail\"\r\n\r\n\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"participantPhone\"\r\n\r\n\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"invoiceName\"\r\n\r\n\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"invoiceCompany\"\r\n\r\n\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"invoiceEmail\"\r\n\r\n\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"isHiddenAmount\"\r\n\r\nfalse\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso--\r\n"))
+                    .POST(HttpRequest.BodyPublishers.ofString("------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"entryTitle\"\r\n\r\nMusikhjälpen\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"entryId\"\r\n\r\n3hDFsvFJNBcbw2cBUDHLAD\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"amount\"\r\n\r\n" + paymentData.amount + "\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"currency\"\r\n\r\nSEK\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"payerAlias\"\r\n\r\n" + paymentData.phoneNumber + "\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"donorType\"\r\n\r\nPRIVATE\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"entryType\"\r\n\r\nfundraiser\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"isPublic\"\r\n\r\ntrue\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"name\"\r\n\r\n" + paymentData.username + "\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"message\"\r\n\r\nVia Minecraft\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"isParticipant\"\r\n\r\nfalse\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"participantName\"\r\n\r\n\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"participantEmail\"\r\n\r\n\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"participantPhone\"\r\n\r\n\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"invoiceName\"\r\n\r\n\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"invoiceCompany\"\r\n\r\n\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"invoiceEmail\"\r\n\r\n\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso\r\nContent-Disposition: form-data; name=\"isHiddenAmount\"\r\n\r\nfalse\r\n------WebKitFormBoundarymQjQXJFEqEjeTFso--\r\n"))
                     .build();
             System.out.println("phone number: " + paymentData.phoneNumber + ", amount: " + paymentData.amount + ", username: " + paymentData.username);
             client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenAccept(response -> {
@@ -56,7 +55,7 @@ public class BossanAPI {
 
     public static boolean checkPayment(String referenceNumber, Consumer<PaymentStatus> f) {
         try {
-            HttpRequest request = HttpRequest.newBuilder().uri(new URI("https://bossan.varldensbarn.se/server/payments/" + referenceNumber))
+            HttpRequest request = HttpRequest.newBuilder().uri(new URI(BASE_URL + "server/payments/" + referenceNumber))
                     .header("accept", "*/*")
                     .header("accept-language", "en-US,en;q=0.9")
                     .header("content-type", "multipart/form-data; boundary=----WebKitFormBoundarymQjQXJFEqEjeTFso")

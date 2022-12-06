@@ -18,7 +18,7 @@ public class BossanPayment extends UpdatablePayment {
 
     @Override
     public void sendRequest() {
-        PaymentData paymentData = new PaymentData(phoneNumber, amount, player.getUniqueId().toString());
+        PaymentData paymentData = new PaymentData(phoneNumber, amount, player.getDisplayName());
         BossanAPI.requestPayment(paymentData, this::onRequestResponse);
     }
 

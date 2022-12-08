@@ -68,7 +68,7 @@ public class DonationManager {
         Player player = Bukkit.getPlayer(playerId);
 
         if (amount > 0) Fireworks.spawnFireworks(swishPlugin, player, (int)(Math.sqrt(10f*amount)/2));
-        if (getDonor(playerId).getTotalDonations() > 50) {
+        if (getDonor(playerId).getTotalDonations() >= 50) {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + Bukkit.getPlayer(playerId).getDisplayName() + " group add donor");
         }
     }

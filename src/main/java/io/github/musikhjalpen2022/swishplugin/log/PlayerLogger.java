@@ -18,6 +18,7 @@ public class PlayerLogger {
 
     public PlayerLogger(String filename) {
         this.file = Paths.get(filename);
+        logServerStart();
     }
 
 
@@ -27,6 +28,12 @@ public class PlayerLogger {
         } catch (IOException e) {
             System.out.println(e);
         }
+    }
+
+    public void logServerStart() {
+        LocalDateTime eventTime = LocalDateTime.now();
+        String log = String.format("%s,%s", eventTime.format(formatter), "START");
+        logLine(log);
     }
 
 

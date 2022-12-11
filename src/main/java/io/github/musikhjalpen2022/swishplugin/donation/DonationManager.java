@@ -1,6 +1,7 @@
 package io.github.musikhjalpen2022.swishplugin.donation;
 
 import io.github.musikhjalpen2022.swishplugin.SwishPlugin;
+import io.github.musikhjalpen2022.swishplugin.log.DonationLogger;
 import io.github.musikhjalpen2022.swishplugin.reward.Fireworks;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -29,6 +30,8 @@ public class DonationManager {
 
     private List<Donor> topDonors;
 
+    private DonationLogger donationLogger;
+
 
     public DonationManager(SwishPlugin swishPlugin) {
         this.swishPlugin = swishPlugin;
@@ -40,6 +43,10 @@ public class DonationManager {
             donors = new HashMap<>();
             topDonors = new ArrayList<>();
         }
+    }
+
+    public void setDonationLogger(DonationLogger donationLogger) {
+        this.donationLogger = donationLogger;
     }
 
     public void addDonationListener(DonationListener donationListener) {
@@ -63,10 +70,23 @@ public class DonationManager {
     }
 
     public void registerDonation(UUID playerId, int amount) {
+        registerDonation(playerId, amount, true);
+    }
+
+    public void registerFakeDonation(UUID playerId, int amount) {
+        registerDonation(playerId, amount, false);
+    }
+
+    private void registerDonation(UUID playerId, int amount, boolean real) {
         addPlayerDonation(playerId, amount);
 
         Player player = Bukkit.getPlayer(playerId);
 
+        if (donationLogger != null) {
+            String username = "";
+            try { username = player.getDisplayName(); } catch (NullPointerException ignored) {}
+            donationLogger.logDonation(username,playerId, amount, real);
+        }
         if (amount > 0) Fireworks.spawnFireworks(swishPlugin, player, (int)(Math.sqrt(10f*amount)/2));
         if (getDonor(playerId).getTotalDonations() >= 50) {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + Bukkit.getPlayer(playerId).getDisplayName() + " group add donor");

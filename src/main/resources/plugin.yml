@@ -10,3 +10,5 @@ commands:
     usage: /swish 1234567890 123
   donate:
     description: Make a fake donation with player username and amount
+  checkpoint:
+    description: Set or teleport to checkpoint

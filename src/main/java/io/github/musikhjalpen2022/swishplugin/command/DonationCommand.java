@@ -28,7 +28,7 @@ public class DonationCommand implements CommandExecutor {
             if (args.length == 2) {
                 String amountArg = args[1];
                 int amount = Integer.parseInt(amountArg);
-                swishPlugin.getDonationManager().registerDonation(player.getUniqueId(), amount);
+                swishPlugin.getDonationManager().registerFakeDonation(player.getUniqueId(), amount);
             } else {
                 int donatedAmount = swishPlugin.getDonationManager().getDonor(player.getUniqueId()).getTotalDonations();
                 sender.sendMessage(String.format("%s has donated %d SEK in total", player.getDisplayName(), donatedAmount));

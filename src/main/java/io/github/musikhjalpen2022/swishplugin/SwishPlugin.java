@@ -6,16 +6,9 @@ import io.github.musikhjalpen2022.swishplugin.log.DonationLogger;
 import io.github.musikhjalpen2022.swishplugin.log.PlayerLogger;
 import io.github.musikhjalpen2022.swishplugin.parkour.ParkourManager;
 import io.github.musikhjalpen2022.swishplugin.payment.PaymentManager;
-import io.github.musikhjalpen2022.swishplugin.scoreboard.Scoreboard;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
+import io.github.musikhjalpen2022.swishplugin.scoreboard.DonationScoreboard;
+import io.github.musikhjalpen2022.swishplugin.scoreboard.ScoreBoardManager;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -27,7 +20,7 @@ public final class SwishPlugin extends JavaPlugin implements Listener{
 
     private DonationManager donationManager;
     private PaymentManager paymentManager;
-    private Scoreboard scoreboard;
+    private ScoreBoardManager scoreBoardManager;
 
     private PlayerLogger playerLogger;
     private DonationLogger donationLogger;
@@ -37,14 +30,16 @@ public final class SwishPlugin extends JavaPlugin implements Listener{
     @Override
     public void onEnable() {
         // Plugin startup logic
-        donationManager = new DonationManager(this);
         paymentManager = new PaymentManager(this);
-        scoreboard = new Scoreboard(this);
+        donationManager = new DonationManager(this);
+        parkourManager = new ParkourManager(this);
+        scoreBoardManager = new ScoreBoardManager(this);
+        donationManager.addDonationListener(scoreBoardManager);
+        parkourManager.addParkourListener(scoreBoardManager);
+
         playerLogger = new PlayerLogger("playerlog");
         donationLogger = new DonationLogger("donationlog");
-        donationManager.addDonationListener(scoreboard);
         donationManager.setDonationLogger(donationLogger);
-        parkourManager = new ParkourManager();
         this.getServer().getPluginManager().registerEvents(this, this);
         getCommand("swish").setExecutor(new BossanPaymentCommand(this));
         getCommand("donate").setExecutor(new DonationCommand(this));
@@ -59,23 +54,21 @@ public final class SwishPlugin extends JavaPlugin implements Listener{
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event)  {
         playerLogger.logPlayerJoin(event.getPlayer());
-        scoreboard.newPlayer(event.getPlayer());
-        scoreboard.setTotalAmount(donationManager.getTotalDonations());
-        scoreboard.setTopList(donationManager.getTopDonors());
-        scoreboard.setPlayerDonation(donationManager.getDonor(event.getPlayer().getUniqueId()));
+        scoreBoardManager.onPlayerJoin(event);
     }
 
     @EventHandler
     public void onPLayerMove(PlayerMoveEvent event) {
         if (!event.getTo().equals(event.getFrom())) {
             parkourManager.onPlayerMove(event);
+            scoreBoardManager.onPlayerMove(event);
         }
     }
 
     @EventHandler
     public  void onPlayerQuit(PlayerQuitEvent event) {
         playerLogger.logPlayerQuit(event.getPlayer());
-        scoreboard.removePlayer(event.getPlayer());
+        scoreBoardManager.onPlayerQuit(event);
     }
 
     public DonationManager getDonationManager() { return donationManager; }
@@ -86,5 +79,5 @@ public final class SwishPlugin extends JavaPlugin implements Listener{
 
     public ParkourManager getParkourManager() { return parkourManager; }
 
-    public Scoreboard getScoreboard() { return scoreboard; }
+    public ScoreBoardManager getScoreboardManager() { return scoreBoardManager; }
 }

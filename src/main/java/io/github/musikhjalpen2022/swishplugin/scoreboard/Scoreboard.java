@@ -1,92 +1,93 @@
 package io.github.musikhjalpen2022.swishplugin.scoreboard;
 
-import io.github.musikhjalpen2022.swishplugin.SwishPlugin;
-import io.github.musikhjalpen2022.swishplugin.donation.DonationListener;
-import io.github.musikhjalpen2022.swishplugin.donation.Donor;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Team;
 
-import java.util.*;
+import java.util.UUID;
 
-public class Scoreboard implements DonationListener {
+public abstract class Scoreboard {
 
-    private List<ScoreHelper> scores;
-    private SwishPlugin swish;
+    protected static final String[] TOP_LIST_COLORS = {"&e", "&7", "&6"};
+    private static final String USER_NAME_COLOR = "&b";
 
-    private static final String[] topListColors = {"&e", "&7", "&6"};
+    private org.bukkit.scoreboard.Scoreboard scoreboard;
+    private Objective sidebar;
 
-    public Scoreboard(SwishPlugin swosh){
-        swish = swosh;
-        scores = new ArrayList<ScoreHelper>();
-    }
+    private UUID playerId = null;
 
-    public void newPlayer(Player player){
-        UUID playeruuid = player.getUniqueId();
-        ScoreHelper sh = new ScoreHelper(player);
-        sh.setTitle("&aMusikhjälpen");
-        sh.setSlot(11, "");
-        sh.setSlot(10, " Minecraft Bidrag ");
-        sh.setSlot(8, "");
-        sh.setSlot(7, "     Toppgivare");
-        sh.setSlot(2, "");
-        sh.setSlot(1, "     Ditt bidrag");
-        scores.add(sh);
-    }
-
-    public void removePlayer(Player player) {
-        for (ScoreHelper scoreHelper : scores) {
-            if (scoreHelper.getPlayerUuid().equals(player.getUniqueId())) {
-                scores.remove(scoreHelper);
-                break;
-            }
+    public Scoreboard(int size, String displayName) {
+        scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+        displayName = ChatColor.translateAlternateColorCodes('&', displayName);
+        sidebar = scoreboard.registerNewObjective("sidebar", Criteria.DUMMY, displayName);
+        sidebar.setDisplaySlot(DisplaySlot.SIDEBAR);
+        // Create Teams
+        for(int i=0; i<size; i++) {
+            Team team = scoreboard.registerNewTeam("SLOT_" + i);
+            team.addEntry(genEntry(i));
         }
     }
 
-    public void setTotalAmount(Integer amount){
-        for (ScoreHelper sh: scores)
-        {
-            sh.setSlot(9, String.format("&a        %d kr", amount));
+    public UUID getPlayerId() {
+        return playerId;
+    }
+
+    public void giveTo(Player player) {
+        player.setScoreboard(scoreboard);
+        playerId = player.getUniqueId();
+    }
+
+    public void removeFrom(Player player) {
+        player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+        playerId = null;
+    }
+
+    public void setSlot(int slot, String text) {
+        Team team = scoreboard.getTeam("SLOT_" + slot);
+        String entry = genEntry(slot);
+        if(!scoreboard.getEntries().contains(entry)) {
+            sidebar.getScore(entry).setScore(slot);
+        }
+
+        text = ChatColor.translateAlternateColorCodes('&', text);
+        String pre = getFirstSplit(text);
+        String suf = getFirstSplit(ChatColor.getLastColors(pre) + getSecondSplit(text));
+        team.setPrefix(pre);
+        team.setSuffix(suf);
+    }
+
+    public void removeSlot(int slot) {
+        String entry = genEntry(slot);
+        if(scoreboard.getEntries().contains(entry)) {
+            scoreboard.resetScores(entry);
         }
     }
 
-    public void setTopList(List<Donor> donors) {
-        for (ScoreHelper sh: scores)
-        {
-            for (int i = 0; i < 3; i++) {
-                if (i < donors.size()) {
-                    int amount = donors.get(i).getTotalDonations();
-                    sh.setSlot(6-i, String.format("%s%d&f %s &a%d kr",topListColors[i], i+1, donors.get(i).getUsername(), amount));
-                } else {
-                    sh.setSlot(6-i, "");
-                }
-            }
+    private String genEntry(int slot) {
+        return ChatColor.values()[slot].toString();
+    }
 
+    private String getFirstSplit(String s) {
+        return s.length()>16 ? s.substring(0, 16) : s;
+    }
+
+    private String getSecondSplit(String s) {
+        if(s.length()>32) {
+            s = s.substring(0, 32);
+        }
+        return s.length()>16 ? s.substring(16) : "";
+    }
+
+    protected String colorUsername(String username, UUID playerId) {
+        if (this.playerId == playerId) {
+            return String.format("%s%s", USER_NAME_COLOR, username);
+        } else {
+            return username;
         }
     }
 
-
-    public void setPlayerDonation(Donor donor) {
-        for (ScoreHelper scoreHelper : scores) {
-            if (scoreHelper.getPlayerUuid().equals(donor.getPlayerId())) {
-                scoreHelper.setSlot(0, String.format("&a        %d kr", donor.getTotalDonations()));
-            }
-        }
-    }
-
-    @Override
-    public void onTotalDonationsChange(int totalDonations) {
-        setTotalAmount(totalDonations);
-    }
-
-    @Override
-    public void onTopDonorsChange(List<Donor> topDonors) {
-        setTopList(topDonors);
-    }
-
-    @Override
-    public void onDonorChange(Donor donor) {
-        setPlayerDonation(donor);
-    }
 }

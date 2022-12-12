@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 public class BossanPaymentCommand implements CommandExecutor {
 
-    private SwishPlugin swishPlugin;
+    private final SwishPlugin swishPlugin;
 
     public BossanPaymentCommand(SwishPlugin swishPlugin) {
         this.swishPlugin = swishPlugin;
@@ -29,18 +29,13 @@ public class BossanPaymentCommand implements CommandExecutor {
             String phoneNumberArg = args[0];
             String amountArg = args[1];
 
-            if (phoneNumberArg.length() != 10){
-                player.sendMessage(String.format("Ditt telefonnummer bestod inte av 10 siffror, försök igen."));
-                return false;
-            }
-
             String phoneNumber = phoneNumberArg.replaceAll("[^0-9]+", ""); // Parse number
             if (phoneNumber.startsWith("0")) { phoneNumber = phoneNumber.replaceFirst("0", "46"); }
             int amount = Integer.parseInt(amountArg);
 
             BossanPayment payment = new BossanPayment(amount, player, phoneNumber);
             swishPlugin.getPaymentManager().request(payment);
-            player.sendMessage(String.format("A Swish request of SEK %d for %s", amount, player.getDisplayName()));
+            player.sendMessage(String.format("A Swish förfrågan på %d kr har gjorts för %s", amount, player.getDisplayName()));
 
             return true;
         } else {

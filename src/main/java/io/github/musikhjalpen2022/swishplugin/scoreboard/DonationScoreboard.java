@@ -30,10 +30,10 @@ public class DonationScoreboard extends Scoreboard {
         for (int i = 0; i < 3; i++) {
             if (i < donors.size()) {
                 Donor donor = donors.get(i);
-                setSlot(6-i, String.format("%s%d&f %s &a%d kr",
+                setSlot(6-i, String.format("%1$-16s &a%2$d kr", String.format("%s%d&f %s",
                         TOP_LIST_COLORS[i],
                         i+1,
-                        colorUsername(donor.getUsername(), donor.getPlayerId()),
+                        colorUsername(donor.getUsername(), donor.getPlayerId())),
                         donor.getTotalDonations()
                 ));
             } else {

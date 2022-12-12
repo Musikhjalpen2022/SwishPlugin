@@ -1,6 +1,7 @@
 package io.github.musikhjalpen2022.swishplugin.parkour;
 
 import io.github.musikhjalpen2022.swishplugin.SwishPlugin;
+import io.github.musikhjalpen2022.swishplugin.scoreboard.ParkourScoreboard;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -72,6 +73,19 @@ public class ParkourManager {
     public ParkourTrial getTrial(UUID playerId) {
         return trials.get(playerId);
     }
+    public void removeTrial(UUID playerId) {
+        parkourPlayers.remove(playerId);
+        updateTopList();
+        save(SAVE_FILE);
+    }
+
+    public void setBestTrial(UUID playerId, ParkourTrial trial) {
+        Player player = Bukkit.getPlayer(playerId);
+        ParkourPlayer parkourPlayer = parkourPlayers.computeIfAbsent(player.getUniqueId(), p -> new ParkourPlayer(player));
+        parkourPlayer.setBestTrial(trial);
+        updateTopList();
+        save(SAVE_FILE);
+    }
 
     public ParkourTrial getBestTrial(UUID playerId) {
         ParkourPlayer parkourPlayer = parkourPlayers.get(playerId);
@@ -116,6 +130,10 @@ public class ParkourManager {
         parkourListeners.forEach(parkourListener -> parkourListener.onCurrentTrialsChanged(Collections.unmodifiableMap(trials)));
     }
 
+    public void onPlayerLeaveArea(Player player) {
+        trials.remove(player.getUniqueId());
+    }
+
 
     public void onPlayerMove(PlayerMoveEvent event) {
         if (event.getTo().distance(START) < START_THRESHOLD) {
@@ -134,13 +152,19 @@ public class ParkourManager {
         ParkourTrial trial = trials.get(player.getUniqueId());
         if (trial != null && !trial.hasFinished()) {
             trial.setEnd(LocalDateTime.now());
-            player.sendMessage(String.format("Du klarade parkouren på %d sekunder!", trial.getTimeWithPenalty().getSeconds()));
             ParkourPlayer parkourPlayer = parkourPlayers.computeIfAbsent(player.getUniqueId(), p -> new ParkourPlayer(player));
             if (trial.isBetterThan(parkourPlayer.getBestTrial())) {
+
+                if (topPlayers.isEmpty() || trial.isBetterThan(topPlayers.get(0).getBestTrial())) {
+                    String message = "[\"\",{\"text\":\"" + player.getDisplayName() + "\",\"color\":\"aqua\"},{\"text\":\" slog rekordet på parkourbanan!\",\"color\":\"dark_green\"},{\"text\":\" (" + ParkourScoreboard.formatTime(trial.getTimeWithPenalty()) + ")\",\"bold\":true,\"color\":\"yellow\"}]";
+                    Bukkit.getOnlinePlayers().forEach(p -> p.sendRawMessage(message));
+                } else {
+                    player.sendRawMessage("[\"\",{\"text\":\"Du\",\"color\":\"aqua\"},{\"text\":\" slog ditt personliga rekord!\",\"color\":\"dark_green\"},{\"text\":\" (" + ParkourScoreboard.formatTime(trial.getTimeWithPenalty()) + ")\",\"bold\":true,\"color\":\"yellow\"}]");
+                }
                 parkourPlayer.setBestTrial(trial);
+
                 notifyPersonalBestChange(parkourPlayer);
                 updateTopList();
-                player.sendMessage("Nytt personbästa!");
                 save(SAVE_FILE);
             }
         }

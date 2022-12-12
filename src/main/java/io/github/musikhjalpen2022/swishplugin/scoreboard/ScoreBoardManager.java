@@ -32,7 +32,6 @@ public class ScoreBoardManager implements DonationListener, ParkourListener {
 
     private void setScoreboard(Player player, Scoreboard scoreboard) {
         scoreboards.put(player.getUniqueId(), scoreboard);
-        scoreboard.giveTo(player);
     }
 
     private void removeScoreboard(Player player) {
@@ -46,7 +45,7 @@ public class ScoreBoardManager implements DonationListener, ParkourListener {
     private void setDonationScoreboard(Player player) {
         DonationScoreboard scoreboard = new DonationScoreboard();
         DonationManager donationManager = swishPlugin.getDonationManager();
-
+        scoreboard.giveTo(player);
         scoreboard.setTotalAmount(donationManager.getTotalDonations());
         scoreboard.setTopList(donationManager.getTopDonors());
         scoreboard.setPlayerDonation(donationManager.getDonor(player.getUniqueId()).getTotalDonations());
@@ -56,6 +55,7 @@ public class ScoreBoardManager implements DonationListener, ParkourListener {
 
     private void setParkourScoreboard(Player player) {
         ParkourScoreboard scoreboard = new ParkourScoreboard();
+        scoreboard.giveTo(player);
         scoreboard.setTopList(swishPlugin.getParkourManager().getTopPlayers());
         scoreboard.setBestTrial(swishPlugin.getParkourManager().getBestTrial(player.getUniqueId()));
         scoreboard.setCurrentTrial(swishPlugin.getParkourManager().getTrial(player.getUniqueId()));
@@ -78,6 +78,7 @@ public class ScoreBoardManager implements DonationListener, ParkourListener {
                 setParkourScoreboard(event.getPlayer());
             } else {
                 setDonationScoreboard(event.getPlayer());
+                swishPlugin.getParkourManager().onPlayerLeaveArea(event.getPlayer());
             }
         }
     }

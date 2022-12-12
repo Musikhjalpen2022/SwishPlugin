@@ -12,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.event.Listener;
 
@@ -44,6 +45,7 @@ public final class SwishPlugin extends JavaPlugin implements Listener{
         getCommand("swish").setExecutor(new BossanPaymentCommand(this));
         getCommand("donate").setExecutor(new DonationCommand(this));
         getCommand("checkpoint").setExecutor(new CheckpointCommand(this));
+        getCommand("parkour").setExecutor(new ParkourCommand(this));
     }
 
     @Override
@@ -69,6 +71,7 @@ public final class SwishPlugin extends JavaPlugin implements Listener{
     public  void onPlayerQuit(PlayerQuitEvent event) {
         playerLogger.logPlayerQuit(event.getPlayer());
         scoreBoardManager.onPlayerQuit(event);
+        parkourManager.onPlayerLeaveArea(event.getPlayer());
     }
 
     public DonationManager getDonationManager() { return donationManager; }

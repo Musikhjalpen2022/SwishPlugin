@@ -83,7 +83,7 @@ public abstract class Scoreboard {
     }
 
     protected String colorUsername(String username, UUID playerId) {
-        if (this.playerId == playerId) {
+        if (this.playerId != null && this.playerId.equals(playerId)) {
             return String.format("%s%s", USER_NAME_COLOR, username);
         } else {
             return username;

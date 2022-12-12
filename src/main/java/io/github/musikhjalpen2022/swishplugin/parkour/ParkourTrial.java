@@ -24,6 +24,11 @@ public class ParkourTrial implements Serializable, Comparable<ParkourTrial> {
         this.start = start;
     }
 
+    public ParkourTrial(Duration time) {
+        this.time = time;
+        this.end = LocalDateTime.now();
+    }
+
     public Checkpoint getCheckpoint() {
         return checkpoint;
     }
